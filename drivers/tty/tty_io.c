@@ -107,6 +107,11 @@
 #include <linux/kmod.h>
 #include <linux/nsproxy.h>
 
+
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 #undef TTY_DEBUG_HANGUP
 #ifdef TTY_DEBUG_HANGUP
 # define tty_debug_hangup(tty, f, args...)	tty_debug(tty, f, ##args)
@@ -3307,6 +3312,7 @@ void console_sysfs_notify(void)
  */
 int __init tty_init(void)
 {
+	TQ84_DEBUG_INDENT();
 	cdev_init(&tty_cdev, &tty_fops);
 	if (cdev_add(&tty_cdev, MKDEV(TTYAUX_MAJOR, 0), 1) ||
 	    register_chrdev_region(MKDEV(TTYAUX_MAJOR, 0), 1, "/dev/tty") < 0)
@@ -3324,6 +3330,7 @@ int __init tty_init(void)
 		consdev = NULL;
 
 #ifdef CONFIG_VT
+	TQ84_DEBUG("CONFIG_VT is defined, calling vty_init");
 	vty_init(&console_fops);
 #endif
 	return 0;

@@ -38,6 +38,10 @@
 
 #include "hid-ids.h"
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 /*
  * Version Information
  */
@@ -1234,6 +1238,7 @@ static void hid_process_event(struct hid_device *hid, struct hid_field *field,
 {
 	struct hid_driver *hdrv = hid->driver;
 	int ret;
+	TQ84_DEBUG_INDENT();
 
 	if (!list_empty(&hid->debug_list))
 		hid_dump_input(hid, usage, value);
@@ -1431,6 +1436,7 @@ void __hid_request(struct hid_device *hid, struct hid_report *report,
 	char *buf;
 	int ret;
 	int len;
+	TQ84_DEBUG_INDENT();
 
 	buf = hid_alloc_report_buf(report, GFP_KERNEL);
 	if (!buf)
@@ -2222,6 +2228,8 @@ static int __bus_removed_driver(struct device_driver *drv, void *data)
 int __hid_register_driver(struct hid_driver *hdrv, struct module *owner,
 		const char *mod_name)
 {
+	// TQ84_DEBUG_INDENT();
+	// TQ84_DEBUG("driver name: %s", hdrv->name);
 	hdrv->driver.name = hdrv->name;
 	hdrv->driver.bus = &hid_bus_type;
 	hdrv->driver.owner = owner;
@@ -2249,6 +2257,7 @@ int hid_check_keys_pressed(struct hid_device *hid)
 {
 	struct hid_input *hidinput;
 	int i;
+	// TQ84_DEBUG_INDENT();
 
 	if (!(hid->claimed & HID_CLAIMED_INPUT))
 		return 0;
@@ -2267,6 +2276,8 @@ EXPORT_SYMBOL_GPL(hid_check_keys_pressed);
 static int __init hid_init(void)
 {
 	int ret;
+
+	TQ84_DEBUG_INDENT();
 
 	if (hid_debug)
 		pr_warn("hid_debug is now used solely for parser and driver debugging.\n"

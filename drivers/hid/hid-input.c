@@ -34,6 +34,10 @@
 
 #include "hid-ids.h"
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 #define unk	KEY_UNKNOWN
 
 static const unsigned char hid_keyboard[256] = {
@@ -1163,6 +1167,7 @@ void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, struct 
 {
 	struct input_dev *input;
 	unsigned *quirks = &hid->quirks;
+	TQ84_DEBUG_INDENT();
 
 	if (!usage->type)
 		return;

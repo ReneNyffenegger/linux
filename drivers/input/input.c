@@ -29,6 +29,10 @@
 #include <linux/rcupdate.h>
 #include "input-compat.h"
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 MODULE_AUTHOR("Vojtech Pavlik <vojtech@suse.cz>");
 MODULE_DESCRIPTION("Input core");
 MODULE_LICENSE("GPL");
@@ -100,6 +104,7 @@ static unsigned int input_to_handler(struct input_handle *handle,
 	struct input_value *end = vals;
 	struct input_value *v;
 
+
 	if (handler->filter) {
 		for (v = vals; v != vals + count; v++) {
 			if (handler->filter(handle, v->type, v->code, v->value))
@@ -114,11 +119,15 @@ static unsigned int input_to_handler(struct input_handle *handle,
 	if (!count)
 		return 0;
 
-	if (handler->events)
+	if (handler->events) {
+		TQ84_DEBUG_INDENT_T("Calling handler-events");
 		handler->events(handle, vals, count);
+	}
 	else if (handler->event)
-		for (v = vals; v != vals + count; v++)
+		for (v = vals; v != vals + count; v++) {
+			TQ84_DEBUG_INDENT_T("Calling handler-event");
 			handler->event(handle, v->type, v->code, v->value);
+		}
 
 	return count;
 }
@@ -133,6 +142,7 @@ static void input_pass_values(struct input_dev *dev,
 {
 	struct input_handle *handle;
 	struct input_value *v;
+	TQ84_DEBUG_INDENT();
 
 	if (!count)
 		return;
@@ -183,6 +193,7 @@ static void input_repeat_key(struct timer_list *t)
 {
 	struct input_dev *dev = from_timer(dev, t, timer);
 	unsigned long flags;
+	TQ84_DEBUG_INDENT();
 
 	spin_lock_irqsave(&dev->event_lock, flags);
 
@@ -369,6 +380,7 @@ static int input_get_disposition(struct input_dev *dev,
 static void input_handle_event(struct input_dev *dev,
 			       unsigned int type, unsigned int code, int value)
 {
+	TQ84_DEBUG_INDENT();
 	int disposition = input_get_disposition(dev, type, code, &value);
 
 	if (disposition != INPUT_IGNORE_EVENT && type != EV_SYN)
@@ -429,6 +441,7 @@ void input_event(struct input_dev *dev,
 		 unsigned int type, unsigned int code, int value)
 {
 	unsigned long flags;
+	TQ84_DEBUG_INDENT();
 
 	if (is_event_supported(type, dev->evbit, EV_MAX)) {
 
@@ -587,6 +600,7 @@ int input_open_device(struct input_handle *handle)
 {
 	struct input_dev *dev = handle->dev;
 	int retval;
+	TQ84_DEBUG_INDENT();
 
 	retval = mutex_lock_interruptible(&dev->mutex);
 	if (retval)
@@ -675,6 +689,7 @@ static void input_dev_release_keys(struct input_dev *dev)
 {
 	bool need_sync = false;
 	int code;
+	TQ84_DEBUG_INDENT();
 
 	if (is_event_supported(EV_KEY, dev->evbit, EV_MAX)) {
 		for_each_set_bit(code, dev->key, KEY_CNT) {
@@ -734,6 +749,7 @@ static void input_disconnect_device(struct input_dev *dev)
 int input_scancode_to_scalar(const struct input_keymap_entry *ke,
 			     unsigned int *scancode)
 {
+	TQ84_DEBUG_INDENT();
 	switch (ke->len) {
 	case 1:
 		*scancode = *((u8 *)ke->scancode);
@@ -877,6 +893,7 @@ int input_get_keycode(struct input_dev *dev, struct input_keymap_entry *ke)
 	int retval;
 
 	spin_lock_irqsave(&dev->event_lock, flags);
+	TQ84_DEBUG_INDENT();
 	retval = dev->getkeycode(dev, ke);
 	spin_unlock_irqrestore(&dev->event_lock, flags);
 
@@ -898,6 +915,7 @@ int input_set_keycode(struct input_dev *dev,
 	unsigned long flags;
 	unsigned int old_keycode;
 	int retval;
+	TQ84_DEBUG_INDENT();
 
 	if (ke->keycode > KEY_MAX)
 		return -EINVAL;
@@ -936,6 +954,7 @@ EXPORT_SYMBOL(input_set_keycode);
 bool input_match_device_id(const struct input_dev *dev,
 			   const struct input_device_id *id)
 {
+	TQ84_DEBUG_INDENT();
 	if (id->flags & INPUT_DEVICE_ID_MATCH_BUS)
 		if (id->bustype != dev->id.bustype)
 			return false;
@@ -962,9 +981,10 @@ bool input_match_device_id(const struct input_dev *dev,
 	    !bitmap_subset(id->ffbit, dev->ffbit, FF_MAX) ||
 	    !bitmap_subset(id->swbit, dev->swbit, SW_MAX) ||
 	    !bitmap_subset(id->propbit, dev->propbit, INPUT_PROP_MAX)) {
+		//TQ84_DEBUG("return false");
 		return false;
 	}
-
+	TQ84_DEBUG("return true");
 	return true;
 }
 EXPORT_SYMBOL(input_match_device_id);
@@ -973,6 +993,7 @@ static const struct input_device_id *input_match_device(struct input_handler *ha
 							struct input_dev *dev)
 {
 	const struct input_device_id *id;
+	TQ84_DEBUG_INDENT();
 
 	for (id = handler->id_table; id->flags || id->driver_info; id++) {
 		if (input_match_device_id(dev, id) &&
@@ -988,6 +1009,7 @@ static int input_attach_handler(struct input_dev *dev, struct input_handler *han
 {
 	const struct input_device_id *id;
 	int error;
+	TQ84_DEBUG_INDENT();
 
 	id = input_match_device(handler, dev);
 	if (!id)
@@ -2083,6 +2105,7 @@ int input_register_device(struct input_dev *dev)
 	unsigned int packet_size;
 	const char *path;
 	int error;
+	TQ84_DEBUG_INDENT();
 
 	if (test_bit(EV_ABS, dev->evbit) && !dev->absinfo) {
 		dev_err(&dev->dev,
@@ -2211,6 +2234,8 @@ int input_register_handler(struct input_handler *handler)
 {
 	struct input_dev *dev;
 	int error;
+
+	TQ84_DEBUG_INDENT();
 
 	error = mutex_lock_interruptible(&input_mutex);
 	if (error)
@@ -2415,6 +2440,7 @@ EXPORT_SYMBOL(input_free_minor);
 static int __init input_init(void)
 {
 	int err;
+	TQ84_DEBUG_INDENT();
 
 	err = class_register(&input_class);
 	if (err) {

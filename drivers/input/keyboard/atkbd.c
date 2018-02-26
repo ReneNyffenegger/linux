@@ -29,6 +29,10 @@
 #include <linux/mutex.h>
 #include <linux/dmi.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 #define DRIVER_DESC	"AT and PS/2 keyboard driver"
 
 MODULE_AUTHOR("Vojtech Pavlik <vojtech@suse.cz>");
@@ -379,6 +383,8 @@ static irqreturn_t atkbd_interrupt(struct serio *serio, unsigned char data,
 	int value;
 	unsigned short keycode;
 
+	TQ84_DEBUG_INDENT_T("data: %d, flags: %02x", data, flags);
+
 	dev_dbg(&serio->dev, "Received %02x flags %02x\n", data, flags);
 
 #if !defined(__i386__) && !defined (__x86_64__)
@@ -508,6 +514,7 @@ static irqreturn_t atkbd_interrupt(struct serio *serio, unsigned char data,
 			atkbd->time = jiffies + msecs_to_jiffies(dev->rep[REP_DELAY]) / 2;
 		}
 
+		TQ84_DEBUG("Calling input_event with EV_KEY=%d, keycode=%d, value=%d", EV_KEY, keycode, value);
 		input_event(dev, EV_KEY, keycode, value);
 		input_sync(dev);
 
@@ -1807,6 +1814,7 @@ static const struct dmi_system_id atkbd_dmi_quirk_table[] __initconst = {
 
 static int __init atkbd_init(void)
 {
+	TQ84_DEBUG_INDENT();
 	dmi_check_system(atkbd_dmi_quirk_table);
 
 	return serio_register_driver(&atkbd_drv);

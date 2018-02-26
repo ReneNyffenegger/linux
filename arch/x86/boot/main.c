@@ -16,6 +16,10 @@
 #include "boot.h"
 #include "string.h"
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 struct boot_params boot_params __attribute__((aligned(16)));
 
 char *HEAP = _end;

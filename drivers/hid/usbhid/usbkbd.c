@@ -33,6 +33,10 @@
 #include <linux/usb/input.h>
 #include <linux/hid.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 /*
  * Version Information
  */
@@ -168,6 +172,8 @@ static int usb_kbd_event(struct input_dev *dev, unsigned int type,
 	unsigned long flags;
 	struct usb_kbd *kbd = input_get_drvdata(dev);
 
+	TQ84_DEBUG_INDENT();
+
 	if (type != EV_LED)
 		return -1;
 
@@ -280,6 +286,8 @@ static int usb_kbd_probe(struct usb_interface *iface,
 	struct input_dev *input_dev;
 	int i, pipe, maxp;
 	int error = -ENOMEM;
+
+	TQ84_DEBUG_INDENT();
 
 	interface = iface->cur_altsetting;
 

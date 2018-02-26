@@ -48,6 +48,10 @@
 
 #include <asm/irq_regs.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 extern void ctrl_alt_del(void);
 
 /*
@@ -142,6 +146,7 @@ static ATOMIC_NOTIFIER_HEAD(keyboard_notifier_list);
 
 int register_keyboard_notifier(struct notifier_block *nb)
 {
+	TQ84_DEBUG_INDENT();
 	return atomic_notifier_chain_register(&keyboard_notifier_list, nb);
 }
 EXPORT_SYMBOL_GPL(register_keyboard_notifier);
@@ -186,6 +191,7 @@ static int getkeycode(unsigned int scancode)
 		},
 		.error	= -ENODEV,
 	};
+	TQ84_DEBUG_INDENT_T("scancode = %d", scancode);
 
 	memcpy(d.ke.scancode, &scancode, sizeof(scancode));
 
@@ -304,12 +310,14 @@ int kbd_rate(struct kbd_repeat *rpt)
  */
 static void put_queue(struct vc_data *vc, int ch)
 {
+	TQ84_DEBUG_INDENT();
 	tty_insert_flip_char(&vc->port, ch, 0);
 	tty_schedule_flip(&vc->port);
 }
 
 static void puts_queue(struct vc_data *vc, char *cp)
 {
+	TQ84_DEBUG_INDENT();
 	while (*cp) {
 		tty_insert_flip_char(&vc->port, *cp, 0);
 		cp++;
@@ -1235,6 +1243,7 @@ static int emulate_raw(struct vc_data *vc, unsigned int keycode,
 		       unsigned char up_flag)
 {
 	int code;
+	TQ84_DEBUG_INDENT_T("keycode = %d", keycode);
 
 	switch (keycode) {
 
@@ -1323,6 +1332,8 @@ static void kbd_keycode(unsigned int keycode, int down, int hw_raw)
 	int shift_final;
 	struct keyboard_notifier_param param = { .vc = vc, .value = keycode, .down = down };
 	int rc;
+
+  	TQ84_DEBUG_INDENT_T("keycode=%d, down=%d, hw_raw=%d", keycode, down, hw_raw);
 
 	tty = vc->port.tty;
 
@@ -1456,6 +1467,9 @@ static void kbd_event(struct input_handle *handle, unsigned int event_type,
 		      unsigned int event_code, int value)
 {
 	/* We are called with interrupts disabled, just take the lock */
+	if (event_type == EV_KEY) {
+		TQ84_DEBUG("event_type=%d, event_code=%d, value=%d", event_type, event_code, value);
+	}
 	spin_lock(&kbd_event_lock);
 
 	if (event_type == EV_MSC && event_code == MSC_RAW && HW_RAW(handle->dev))
@@ -1501,6 +1515,8 @@ static int kbd_connect(struct input_handler *handler, struct input_dev *dev,
 	struct input_handle *handle;
 	int error;
 
+	TQ84_DEBUG_INDENT();
+
 	handle = kzalloc(sizeof(struct input_handle), GFP_KERNEL);
 	if (!handle)
 		return -ENOMEM;
@@ -1539,6 +1555,7 @@ static void kbd_disconnect(struct input_handle *handle)
  */
 static void kbd_start(struct input_handle *handle)
 {
+	TQ84_DEBUG_INDENT();
 	tasklet_disable(&keyboard_tasklet);
 
 	if (ledstate != -1U)
@@ -1577,6 +1594,8 @@ int __init kbd_init(void)
 {
 	int i;
 	int error;
+
+	TQ84_DEBUG_INDENT();
 
 	for (i = 0; i < MAX_NR_CONSOLES; i++) {
 		kbd_table[i].ledflagstate = kbd_defleds();

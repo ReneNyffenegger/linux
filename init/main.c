@@ -96,6 +96,11 @@
 #include <asm/sections.h>
 #include <asm/cacheflush.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+#include <tq84-c-debug/tq84_debug.c>
+
 static int kernel_init(void *);
 
 extern void init_IRQ(void);
@@ -516,6 +521,8 @@ asmlinkage __visible void __init start_kernel(void)
 	char *command_line;
 	char *after_dashes;
 
+  	TQ84_DEBUG_INDENT();
+
 	set_task_stack_end_magic(&init_task);
 	smp_setup_processor_id();
 	debug_objects_early_init();
@@ -900,6 +907,7 @@ static void __init do_initcall_level(int level)
 
 static void __init do_initcalls(void)
 {
+	TQ84_DEBUG_INDENT();
 	int level;
 
 	for (level = 0; level < ARRAY_SIZE(initcall_levels) - 1; level++)
@@ -915,6 +923,7 @@ static void __init do_initcalls(void)
  */
 static void __init do_basic_setup(void)
 {
+	TQ84_DEBUG_INDENT();
 	cpuset_init_smp();
 	shmem_init();
 	driver_init();
@@ -1040,6 +1049,7 @@ static int __ref kernel_init(void *unused)
 
 static noinline void __init kernel_init_freeable(void)
 {
+	TQ84_DEBUG_INDENT();
 	/*
 	 * Wait until kthreadd is all set-up.
 	 */
@@ -1072,6 +1082,8 @@ static noinline void __init kernel_init_freeable(void)
 	do_basic_setup();
 
 	/* Open the /dev/console on the rootfs, this should never fail */
+ 	TQ84_DEBUG("Opening /dev/console");
+
 	if (sys_open((const char __user *) "/dev/console", O_RDWR, 0) < 0)
 		pr_err("Warning: unable to open an initial console.\n");
 

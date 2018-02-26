@@ -38,11 +38,17 @@
 #include <linux/hidraw.h>
 #include "usbhid.h"
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 /*
  * Version Information
  */
 
 #define DRIVER_DESC "USB HID core driver"
+
+
 
 /*
  * Module parameters.
@@ -81,6 +87,7 @@ static int hid_start_in(struct hid_device *hid)
 	unsigned long flags;
 	int rc = 0;
 	struct usbhid_device *usbhid = hid->driver_data;
+	TQ84_DEBUG_INDENT();
 
 	spin_lock_irqsave(&usbhid->lock, flags);
 	if (test_bit(HID_IN_POLLING, &usbhid->iofl) &&
@@ -272,6 +279,9 @@ static void hid_irq_in(struct urb *urb)
 	struct hid_device	*hid = urb->context;
 	struct usbhid_device	*usbhid = hid->driver_data;
 	int			status;
+
+//      TQ84: Apparently, this function is repeadetly called, even
+//            if no key is pressed.
 
 	switch (urb->status) {
 	case 0:			/* success */
@@ -680,6 +690,8 @@ static int usbhid_open(struct hid_device *hid)
 	struct usbhid_device *usbhid = hid->driver_data;
 	int res;
 
+	TQ84_DEBUG_INDENT();
+
 	set_bit(HID_OPENED, &usbhid->iofl);
 
 	if (hid->quirks & HID_QUIRK_ALWAYS_POLL)
@@ -1055,6 +1067,8 @@ static int usbhid_start(struct hid_device *hid)
 	unsigned int n, insize = 0;
 	int ret;
 
+	TQ84_DEBUG_INDENT();
+
 	clear_bit(HID_DISCONNECTED, &usbhid->iofl);
 
 	usbhid->bufsize = HID_MIN_BUFFER_SIZE;
@@ -1298,6 +1312,7 @@ static int usbhid_probe(struct usb_interface *intf, const struct usb_device_id *
 	unsigned int n, has_in = 0;
 	size_t len;
 	int ret;
+	TQ84_DEBUG_INDENT();
 
 	dbg_hid("HID probe called for ifnum %d\n",
 			intf->altsetting->desc.bInterfaceNumber);
@@ -1633,6 +1648,7 @@ static struct usb_driver hid_driver = {
 
 struct usb_interface *usbhid_find_interface(int minor)
 {
+	TQ84_DEBUG_INDENT();
 	return usb_find_interface(&hid_driver, minor);
 }
 
@@ -1640,6 +1656,7 @@ static int __init hid_init(void)
 {
 	int retval = -ENOMEM;
 
+	TQ84_DEBUG_INDENT();
 	retval = hid_quirks_init(quirks_param, BUS_USB, MAX_USBHID_BOOT_QUIRKS);
 	if (retval)
 		goto usbhid_quirks_init_fail;

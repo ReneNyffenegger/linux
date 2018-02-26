@@ -36,6 +36,10 @@
 # include <linux/efi.h>
 #endif
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 #define DEVPORT_MINOR	4
 
 static inline unsigned long size_inside_page(unsigned long start,
@@ -916,6 +920,7 @@ static struct class *mem_class;
 static int __init chr_dev_init(void)
 {
 	int minor;
+	TQ84_DEBUG_INDENT();
 
 	if (register_chrdev(MEM_MAJOR, "mem", &memory_fops))
 		printk("unable to get major %d for memory devs\n", MEM_MAJOR);

@@ -37,6 +37,10 @@
 #include <linux/kbd_diacr.h>
 #include <linux/selection.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 char vt_dont_switch;
 extern struct tty_driver *console_driver;
 
@@ -90,6 +94,8 @@ void vt_event_post(unsigned int event, unsigned int old, unsigned int new)
 	struct list_head *pos, *head;
 	unsigned long flags;
 	int wake = 0;
+
+	TQ84_DEBUG_INDENT();
 
 	spin_lock_irqsave(&vt_event_lock, flags);
 	head = &vt_events;
@@ -226,6 +232,8 @@ do_fontx_ioctl(int cmd, struct consolefontdesc __user *user_cfd, int perm, struc
 	struct consolefontdesc cfdarg;
 	int i;
 
+	TQ84_DEBUG_INDENT();
+
 	if (copy_from_user(&cfdarg, user_cfd, sizeof(struct consolefontdesc))) 
 		return -EFAULT;
  	
@@ -339,6 +347,8 @@ int vt_ioctl(struct tty_struct *tty,
 	void __user *up = (void __user *)arg;
 	int i, perm;
 	int ret = 0;
+
+	// TQ84_DEBUG_INDENT();
 
 	console = vc->vc_num;
 
@@ -1124,6 +1134,8 @@ compat_kdfontop_ioctl(struct compat_console_font_op __user *fontop,
 {
 	int i;
 
+	TQ84_DEBUG_INDENT();
+
 	if (copy_from_user(op, fontop, sizeof(struct compat_console_font_op)))
 		return -EFAULT;
 	if (!perm && op->op != KD_FONT_OP_GET)
@@ -1175,6 +1187,8 @@ long vt_compat_ioctl(struct tty_struct *tty,
 	void __user *up = (void __user *)arg;
 	int perm;
 	int ret = 0;
+
+	TQ84_DEBUG_INDENT();
 
 	console = vc->vc_num;
 
@@ -1262,6 +1276,8 @@ static void complete_change_console(struct vc_data *vc)
 	unsigned char old_vc_mode;
 	int old = fg_console;
 
+	TQ84_DEBUG_INDENT();
+
 	last_console = fg_console;
 
 	/*
@@ -1335,6 +1351,8 @@ void change_console(struct vc_data *new_vc)
 {
 	struct vc_data *vc;
 
+	TQ84_DEBUG_INDENT();
+
 	if (!new_vc || new_vc->vc_num == fg_console || vt_dont_switch)
 		return;
 
@@ -1406,6 +1424,8 @@ int vt_move_to_console(unsigned int vt, int alloc)
 {
 	int prev;
 
+	TQ84_DEBUG_INDENT();
+
 	console_lock();
 	/* Graphics mode - up to X */
 	if (disable_vt_switch) {
@@ -1447,6 +1467,9 @@ int vt_move_to_console(unsigned int vt, int alloc)
  */
 void pm_set_vt_switch(int do_switch)
 {
+
+	TQ84_DEBUG_INDENT();
+
 	console_lock();
 	disable_vt_switch = !do_switch;
 	console_unlock();

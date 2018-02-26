@@ -105,6 +105,10 @@
 #include <linux/ctype.h>
 #include <linux/bsearch.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 #define MAX_NR_CON_DRIVER 16
 
 #define CON_DRIVER_FLAG_MODULE 1
@@ -2197,6 +2201,8 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
 	uint8_t width;
 	u16 himask, charmask;
 
+	TQ84_DEBUG_INDENT();
+
 	if (in_interrupt())
 		return count;
 
@@ -2778,6 +2784,8 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 static int con_write(struct tty_struct *tty, const unsigned char *buf, int count)
 {
 	int	retval;
+	
+	TQ84_DEBUG_INDENT();
 
 	retval = do_con_write(tty, buf, count);
 	con_flush_chars(tty);
@@ -2871,6 +2879,7 @@ static int con_install(struct tty_driver *driver, struct tty_struct *tty)
 	unsigned int currcons = tty->index;
 	struct vc_data *vc;
 	int ret;
+	TQ84_DEBUG_INDENT();
 
 	console_lock();
 	ret = vc_allocate(currcons);
@@ -2907,6 +2916,7 @@ unlock:
 
 static int con_open(struct tty_struct *tty, struct file *filp)
 {
+	TQ84_DEBUG_INDENT();
 	/* everything done in install */
 	return 0;
 }
@@ -2937,6 +2947,9 @@ static void vc_init(struct vc_data *vc, unsigned int rows,
 		    unsigned int cols, int do_clear)
 {
 	int j, k ;
+
+	
+	TQ84_DEBUG_INDENT();
 
 	vc->vc_cols = cols;
 	vc->vc_rows = rows;
@@ -2970,6 +2983,8 @@ static int __init con_init(void)
 	const char *display_desc = NULL;
 	struct vc_data *vc;
 	unsigned int currcons = 0, i;
+
+	TQ84_DEBUG_INDENT();
 
 	console_lock();
 
@@ -3071,6 +3086,7 @@ ATTRIBUTE_GROUPS(vt_dev);
 
 int __init vty_init(const struct file_operations *console_fops)
 {
+	TQ84_DEBUG_INDENT();
 	cdev_init(&vc0_cdev, console_fops);
 	if (cdev_add(&vc0_cdev, MKDEV(TTY_MAJOR, 0), 1) ||
 	    register_chrdev_region(MKDEV(TTY_MAJOR, 0), 1, "/dev/vc/0") < 0)
