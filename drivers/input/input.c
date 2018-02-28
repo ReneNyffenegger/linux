@@ -954,7 +954,7 @@ EXPORT_SYMBOL(input_set_keycode);
 bool input_match_device_id(const struct input_dev *dev,
 			   const struct input_device_id *id)
 {
-	TQ84_DEBUG_INDENT();
+	// TQ84_DEBUG_INDENT();
 	if (id->flags & INPUT_DEVICE_ID_MATCH_BUS)
 		if (id->bustype != dev->id.bustype)
 			return false;
@@ -984,7 +984,7 @@ bool input_match_device_id(const struct input_dev *dev,
 		//TQ84_DEBUG("return false");
 		return false;
 	}
-	TQ84_DEBUG("return true");
+	//TQ84_DEBUG("return true");
 	return true;
 }
 EXPORT_SYMBOL(input_match_device_id);
@@ -993,7 +993,7 @@ static const struct input_device_id *input_match_device(struct input_handler *ha
 							struct input_dev *dev)
 {
 	const struct input_device_id *id;
-	TQ84_DEBUG_INDENT();
+	//TQ84_DEBUG_INDENT();
 
 	for (id = handler->id_table; id->flags || id->driver_info; id++) {
 		if (input_match_device_id(dev, id) &&
@@ -1009,7 +1009,7 @@ static int input_attach_handler(struct input_dev *dev, struct input_handler *han
 {
 	const struct input_device_id *id;
 	int error;
-	TQ84_DEBUG_INDENT();
+	//TQ84_DEBUG_INDENT();
 
 	id = input_match_device(handler, dev);
 	if (!id)

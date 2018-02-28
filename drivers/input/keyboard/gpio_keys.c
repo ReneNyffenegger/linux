@@ -31,6 +31,10 @@
 #include <linux/of_irq.h>
 #include <linux/spinlock.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 struct gpio_button_data {
 	const struct gpio_keys_button *button;
 	struct input_dev *input;
@@ -364,6 +368,8 @@ static void gpio_keys_gpio_report_event(struct gpio_button_data *bdata)
 	unsigned int type = button->type ?: EV_KEY;
 	int state;
 
+	TQ84_DEBUG_INDENT();
+
 	state = gpiod_get_value_cansleep(bdata->gpiod);
 	if (state < 0) {
 		dev_err(input->dev.parent,
@@ -425,6 +431,8 @@ static void gpio_keys_irq_timer(struct timer_list *t)
 	struct input_dev *input = bdata->input;
 	unsigned long flags;
 
+	TQ84_DEBUG_INDENT();
+
 	spin_lock_irqsave(&bdata->lock, flags);
 	if (bdata->key_pressed) {
 		input_event(input, EV_KEY, *bdata->code, 0);
@@ -439,6 +447,8 @@ static irqreturn_t gpio_keys_irq_isr(int irq, void *dev_id)
 	struct gpio_button_data *bdata = dev_id;
 	struct input_dev *input = bdata->input;
 	unsigned long flags;
+
+	TQ84_DEBUG_INDENT();
 
 	BUG_ON(irq != bdata->irq);
 

@@ -19,6 +19,10 @@
 #include <linux/module.h>
 #include <linux/serdev.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 static int tty_port_default_receive_buf(struct tty_port *port,
 					const unsigned char *p,
 					const unsigned char *f, size_t count)
@@ -59,6 +63,8 @@ static const struct tty_port_client_operations default_client_ops = {
 
 void tty_port_init(struct tty_port *port)
 {
+	TQ84_DEBUG_INDENT();
+
 	memset(port, 0, sizeof(*port));
 	tty_buffer_init(port);
 	init_waitqueue_head(&port->open_wait);
@@ -675,6 +681,7 @@ EXPORT_SYMBOL_GPL(tty_port_install);
 int tty_port_open(struct tty_port *port, struct tty_struct *tty,
 							struct file *filp)
 {
+	TQ84_DEBUG_INDENT();
 	spin_lock_irq(&port->lock);
 	++port->count;
 	spin_unlock_irq(&port->lock);

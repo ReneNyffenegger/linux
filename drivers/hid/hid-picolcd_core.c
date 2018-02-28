@@ -32,6 +32,10 @@
 #include "hid-picolcd.h"
 
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 /* Input device
  *
  * The PicoLCD has an IR receiver header, a built-in keypad with 5 keys
@@ -131,6 +135,7 @@ static int picolcd_raw_keypad(struct picolcd_data *data,
 	 * 0x00 means no key and at most 2 keys may be pressed at same time
 	 */
 	int i, j;
+	TQ84_DEBUG_INDENT();
 
 	/* determine newly pressed keys */
 	for (i = 0; i < size; i++) {

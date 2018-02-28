@@ -30,6 +30,10 @@
 #include "usbhid/usbhid.h"
 #include "hid-ids.h"
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Benjamin Tissoires <benjamin.tissoires@gmail.com>");
 MODULE_AUTHOR("Nestor Lopez Casado <nlopezcasad@logitech.com>");
@@ -2079,6 +2083,8 @@ static void wtp_send_raw_xy_event(struct hidpp_device *hidpp,
 {
 	struct wtp_data *wd = hidpp->private_data;
 	int i;
+
+	TQ84_DEBUG_INDENT();
 
 	for (i = 0; i < 2; i++)
 		wtp_touch_event(wd, &(raw->fingers[i]));

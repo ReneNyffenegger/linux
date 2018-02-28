@@ -11,6 +11,10 @@
 #include <linux/smp.h>
 #include <linux/atomic.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 static void __dump_stack(void)
 {
 	dump_stack_print_info(KERN_DEFAULT);
@@ -31,6 +35,8 @@ asmlinkage __visible void dump_stack(void)
 	int was_locked;
 	int old;
 	int cpu;
+
+	TQ84_DEBUG_INDENT_T("CONFIG_SMP");
 
 	/*
 	 * Permit this cpu to perform nested stack dumps while serialising
@@ -60,6 +66,7 @@ retry:
 #else
 asmlinkage __visible void dump_stack(void)
 {
+	TQ84_DEBUG_INDENT_T("Not CONFIG_SMP");
 	__dump_stack();
 }
 #endif

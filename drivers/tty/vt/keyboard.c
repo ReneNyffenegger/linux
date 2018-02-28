@@ -310,7 +310,87 @@ int kbd_rate(struct kbd_repeat *rpt)
  */
 static void put_queue(struct vc_data *vc, int ch)
 {
+	unsigned long tq84_stack_entries[50];
+   	struct stack_trace tq84_trace = {
+   		.nr_entries = 50,
+   		.entries = &tq84_stack_entries[0],
+                .max_entries = 50,
+   		.skip = 0
+   	};
+   	int tq84_e;
+//q	void* tq84_addr;
+   	static int tq84_stacktrace_done = 0;
+
 	TQ84_DEBUG_INDENT();
+
+   	if (! tq84_stacktrace_done) {
+//q		tq84_addr = __builtin_frame_address(0);
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc  0: %pS", tq84_addr); tq84_addr = __builtin_frame_address( 1); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc  1: %pS", tq84_addr); tq84_addr = __builtin_frame_address( 2); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc  2: %pS", tq84_addr); tq84_addr = __builtin_frame_address( 3); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc  3: %pS", tq84_addr); tq84_addr = __builtin_frame_address( 4); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc  4: %pS", tq84_addr); tq84_addr = __builtin_frame_address( 5); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc  5: %pS", tq84_addr); tq84_addr = __builtin_frame_address( 6); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc  6: %pS", tq84_addr); tq84_addr = __builtin_frame_address( 7); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc  7: %pS", tq84_addr); tq84_addr = __builtin_frame_address( 8); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc  8: %pS", tq84_addr); tq84_addr = __builtin_frame_address( 9); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc  9: %pS", tq84_addr); tq84_addr = __builtin_frame_address(10); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 10: %pS", tq84_addr); tq84_addr = __builtin_frame_address(11); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 11: %pS", tq84_addr); tq84_addr = __builtin_frame_address(12); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 12: %pS", tq84_addr); tq84_addr = __builtin_frame_address(13); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 13: %pS", tq84_addr); tq84_addr = __builtin_frame_address(14); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 14: %pS", tq84_addr); tq84_addr = __builtin_frame_address(15); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 15: %pS", tq84_addr); tq84_addr = __builtin_frame_address(16); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 16: %pS", tq84_addr); tq84_addr = __builtin_frame_address(17); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 17: %pS", tq84_addr); tq84_addr = __builtin_frame_address(18); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 18: %pS", tq84_addr); tq84_addr = __builtin_frame_address(19); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 19: %pS", tq84_addr); tq84_addr = __builtin_frame_address(20); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 20: %pS", tq84_addr); tq84_addr = __builtin_frame_address(21); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 21: %pS", tq84_addr); tq84_addr = __builtin_frame_address(22); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 22: %pS", tq84_addr); tq84_addr = __builtin_frame_address(23); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 23: %pS", tq84_addr); tq84_addr = __builtin_frame_address(24); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 24: %pS", tq84_addr); tq84_addr = __builtin_frame_address(25); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 25: %pS", tq84_addr); tq84_addr = __builtin_frame_address(26); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 26: %pS", tq84_addr); tq84_addr = __builtin_frame_address(27); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 27: %pS", tq84_addr); tq84_addr = __builtin_frame_address(28); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 28: %pS", tq84_addr); tq84_addr = __builtin_frame_address(29); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 29: %pS", tq84_addr); tq84_addr = __builtin_frame_address(30); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 30: %pS", tq84_addr); tq84_addr = __builtin_frame_address(31); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 31: %pS", tq84_addr); tq84_addr = __builtin_frame_address(32); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 32: %pS", tq84_addr); tq84_addr = __builtin_frame_address(33); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 33: %pS", tq84_addr); tq84_addr = __builtin_frame_address(34); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 34: %pS", tq84_addr); tq84_addr = __builtin_frame_address(35); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 35: %pS", tq84_addr); tq84_addr = __builtin_frame_address(36); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 36: %pS", tq84_addr); tq84_addr = __builtin_frame_address(37); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 37: %pS", tq84_addr); tq84_addr = __builtin_frame_address(38); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 38: %pS", tq84_addr); tq84_addr = __builtin_frame_address(39); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 39: %pS", tq84_addr); tq84_addr = __builtin_frame_address(40); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 40: %pS", tq84_addr); tq84_addr = __builtin_frame_address(41); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 41: %pS", tq84_addr); tq84_addr = __builtin_frame_address(42); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 42: %pS", tq84_addr); tq84_addr = __builtin_frame_address(43); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 43: %pS", tq84_addr); tq84_addr = __builtin_frame_address(44); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 44: %pS", tq84_addr); tq84_addr = __builtin_frame_address(45); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 45: %pS", tq84_addr); tq84_addr = __builtin_frame_address(46); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 46: %pS", tq84_addr); tq84_addr = __builtin_frame_address(47); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 47: %pS", tq84_addr); tq84_addr = __builtin_frame_address(48); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 48: %pS", tq84_addr); tq84_addr = __builtin_frame_address(49); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 49: %pS", tq84_addr); tq84_addr = __builtin_frame_address(50); }
+//q		if (tq84_addr != NULL) { TQ84_DEBUG("btrc 50: %pS", tq84_addr); tq84_addr = __builtin_frame_address(51); }
+
+		dump_stack();
+
+   		save_stack_trace(&tq84_trace);
+   		for (tq84_e=0; tq84_e<tq84_trace.nr_entries; tq84_e++) {
+   			TQ84_DEBUG("stacktrace addr: %2d: %p / %pS", tq84_e, tq84_stack_entries[tq84_e], tq84_stack_entries[tq84_e]);
+ 			if (tq84_e == 0) TQ84_DEBUG("bla: %p / %pS", __builtin_return_address(0),__builtin_return_address(0));
+ 			if (tq84_e == 1) TQ84_DEBUG("bla: %p / %pS", __builtin_return_address(1),__builtin_return_address(1));
+ 			if (tq84_e == 2) TQ84_DEBUG("bla: %p / %pS", __builtin_return_address(2),__builtin_return_address(2));
+   			if (tq84_e == 3) TQ84_DEBUG("bla: %p / %pS", __builtin_return_address(3),__builtin_return_address(3));
+   			if (tq84_e == 4) TQ84_DEBUG("bla: %p / %pS", __builtin_return_address(4),__builtin_return_address(4));
+   			if (tq84_e == 5) TQ84_DEBUG("bla: %p / %pS", __builtin_return_address(5),__builtin_return_address(5));
+		}	
+		tq84_stacktrace_done = 1;
+	}
 	tty_insert_flip_char(&vc->port, ch, 0);
 	tty_schedule_flip(&vc->port);
 }

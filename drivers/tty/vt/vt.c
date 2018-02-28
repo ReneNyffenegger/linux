@@ -2201,7 +2201,7 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
 	uint8_t width;
 	u16 himask, charmask;
 
-	TQ84_DEBUG_INDENT();
+	//TQ84_DEBUG_INDENT();
 
 	if (in_interrupt())
 		return count;
@@ -2785,7 +2785,7 @@ static int con_write(struct tty_struct *tty, const unsigned char *buf, int count
 {
 	int	retval;
 	
-	TQ84_DEBUG_INDENT();
+	//TQ84_DEBUG_INDENT();
 
 	retval = do_con_write(tty, buf, count);
 	con_flush_chars(tty);
@@ -2879,7 +2879,7 @@ static int con_install(struct tty_driver *driver, struct tty_struct *tty)
 	unsigned int currcons = tty->index;
 	struct vc_data *vc;
 	int ret;
-	TQ84_DEBUG_INDENT();
+	//TQ84_DEBUG_INDENT();
 
 	console_lock();
 	ret = vc_allocate(currcons);

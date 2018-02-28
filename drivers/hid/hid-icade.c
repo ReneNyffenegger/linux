@@ -18,6 +18,10 @@
 
 #include "hid-ids.h"
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 /*
  *   ↑      A C Y L
  *  ← →
@@ -168,6 +172,9 @@ static int icade_event(struct hid_device *hdev, struct hid_field *field,
 		struct hid_usage *usage, __s32 value)
 {
 	const struct icade_key *trans;
+
+
+	TQ84_DEBUG_INDENT();
 
 	if (!(hdev->claimed & HID_CLAIMED_INPUT) || !field->hidinput ||
 			!usage->type)

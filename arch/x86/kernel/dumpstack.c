@@ -22,6 +22,10 @@
 #include <asm/stacktrace.h>
 #include <asm/unwind.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 int panic_on_unrecovered_nmi;
 int panic_on_io_nmi;
 unsigned int code_bytes = 64;
@@ -110,6 +114,8 @@ void show_trace_log_lvl(struct task_struct *task, struct pt_regs *regs,
 	unsigned long visit_mask = 0;
 	int graph_idx = 0;
 	bool partial = false;
+
+	TQ84_DEBUG_INDENT();
 
 	printk("%sCall Trace:\n", log_lvl);
 
@@ -224,6 +230,8 @@ next:
 
 void show_stack(struct task_struct *task, unsigned long *sp)
 {
+	TQ84_DEBUG_INDENT();
+
 	task = task ? : current;
 
 	/*

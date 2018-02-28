@@ -22,12 +22,17 @@
 #include <linux/kdev_t.h>
 #include <linux/syscalls.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 /*
  * Create a simple rootfs that is similar to the default initramfs
  */
 static int __init default_rootfs(void)
 {
 	int err;
+	TQ84_DEBUG_INDENT();
 
 	err = sys_mkdir((const char __user __force *) "/dev", 0755);
 	if (err < 0)

@@ -22,12 +22,19 @@
 
 #include "hid-ids.h"
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 /*
  * Fix negative events that are out of bounds.
  */
 static int xinmo_event(struct hid_device *hdev, struct hid_field *field,
 		struct hid_usage *usage, __s32 value)
 {
+
+	TQ84_DEBUG_INDENT();
+
 	switch (usage->code) {
 	case ABS_X:
 	case ABS_Y:

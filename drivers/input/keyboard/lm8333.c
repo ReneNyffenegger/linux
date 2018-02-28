@@ -15,6 +15,10 @@
 #include <linux/input/matrix_keypad.h>
 #include <linux/input/lm8333.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 #define LM8333_FIFO_READ		0x20
 #define LM8333_DEBOUNCE			0x22
 #define LM8333_READ_INT			0xD0
@@ -82,6 +86,8 @@ static void lm8333_key_handler(struct lm8333 *lm8333)
 	u8 keys[LM8333_FIFO_TRANSFER_SIZE];
 	u8 code, pressed;
 	int i, ret;
+
+	TQ84_DEBUG_INDENT();
 
 	ret = lm8333_read_block(lm8333, LM8333_FIFO_READ,
 				LM8333_FIFO_TRANSFER_SIZE, keys);

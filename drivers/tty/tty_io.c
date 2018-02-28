@@ -188,6 +188,7 @@ static inline struct tty_struct *file_tty(struct file *file)
 int tty_alloc_file(struct file *file)
 {
 	struct tty_file_private *priv;
+	TQ84_DEBUG_INDENT();
 
 	priv = kmalloc(sizeof(*priv), GFP_KERNEL);
 	if (!priv)
@@ -202,6 +203,7 @@ int tty_alloc_file(struct file *file)
 void tty_add_file(struct tty_struct *tty, struct file *file)
 {
 	struct tty_file_private *priv = file->private_data;
+	TQ84_DEBUG_INDENT();
 
 	priv->tty = tty;
 	priv->file = file;
@@ -846,6 +848,8 @@ static ssize_t tty_read(struct file *file, char __user *buf, size_t count,
 	struct inode *inode = file_inode(file);
 	struct tty_struct *tty = file_tty(file);
 	struct tty_ldisc *ld;
+	
+	TQ84_DEBUG_INDENT();
 
 	if (tty_paranoia_check(tty, inode, "tty_read"))
 		return -EIO;
@@ -1021,6 +1025,8 @@ static ssize_t tty_write(struct file *file, const char __user *buf,
 	struct tty_struct *tty = file_tty(file);
  	struct tty_ldisc *ld;
 	ssize_t ret;
+	
+	TQ84_DEBUG_INDENT_T("buf = %s", buf);
 
 	if (tty_paranoia_check(tty, file_inode(file), "tty_write"))
 		return -EIO;

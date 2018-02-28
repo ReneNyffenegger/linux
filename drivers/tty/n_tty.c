@@ -50,6 +50,10 @@
 #include <linux/ratelimit.h>
 #include <linux/vmalloc.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 
 /* number of characters left in xmit buffer before select has we have room */
 #define WAKEUP_CHARS 256
@@ -298,6 +302,7 @@ static void n_tty_check_unthrottle(struct tty_struct *tty)
 
 static inline void put_tty_queue(unsigned char c, struct n_tty_data *ldata)
 {
+	TQ84_DEBUG_INDENT_T("c = %c", c);
 	*read_buf_addr(ldata, ldata->read_head) = c;
 	ldata->read_head++;
 }

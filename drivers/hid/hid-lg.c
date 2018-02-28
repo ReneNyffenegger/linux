@@ -29,6 +29,10 @@
 #include "hid-lg.h"
 #include "hid-lg4ff.h"
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 #define LG_RDESC		0x001
 #define LG_BAD_RELATIVE_KEYS	0x002
 #define LG_DUPLICATE_USAGES	0x004
@@ -688,6 +692,8 @@ static int lg_event(struct hid_device *hdev, struct hid_field *field,
 		struct hid_usage *usage, __s32 value)
 {
 	struct lg_drv_data *drv_data = hid_get_drvdata(hdev);
+
+	TQ84_DEBUG_INDENT();
 
 	if ((drv_data->quirks & LG_INVERT_HWHEEL) && usage->code == REL_HWHEEL) {
 		input_event(field->hidinput->input, usage->type, usage->code,

@@ -54,6 +54,10 @@
 #include <asm/ptrace.h>
 #include <asm/irq_regs.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 /* Whether we react on sysrq keys or just ignore them */
 static int __read_mostly sysrq_enabled = CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE;
 static bool __read_mostly sysrq_always_enabled;
@@ -1130,6 +1134,7 @@ static inline void sysrq_init_procfs(void)
 
 static int __init sysrq_init(void)
 {
+	TQ84_DEBUG_INDENT();
 	sysrq_init_procfs();
 
 	if (sysrq_on())

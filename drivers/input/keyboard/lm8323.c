@@ -34,6 +34,10 @@
 #include <linux/pm.h>
 #include <linux/slab.h>
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 /* Commands to send to the chip. */
 #define LM8323_CMD_READ_ID		0x80 /* Read chip ID. */
 #define LM8323_CMD_WRITE_CFG		0x81 /* Set configuration item. */
@@ -262,6 +266,8 @@ static void process_keys(struct lm8323_chip *lm)
 	int old_keys_down = lm->keys_down;
 	int ret;
 	int i = 0;
+
+	TQ84_DEBUG_INDENT();
 
 	/*
 	 * Read all key events from the FIFO at once. Next READ_FIFO clears the

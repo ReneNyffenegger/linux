@@ -29,6 +29,10 @@
 #define MS_NOGET		0x10
 #define MS_DUPLICATE_USAGES	0x20
 
+#define  TQ84_DEBUG_ENABLED
+#define  TQ84_DEBUG_KERNEL
+#include <tq84-c-debug/tq84_debug.h>
+
 static __u8 *ms_report_fixup(struct hid_device *hdev, __u8 *rdesc,
 		unsigned int *rsize)
 {
@@ -166,6 +170,8 @@ static int ms_event(struct hid_device *hdev, struct hid_field *field,
 {
 	unsigned long quirks = (unsigned long)hid_get_drvdata(hdev);
 	struct input_dev *input;
+
+	TQ84_DEBUG_INDENT();
 
 	if (!(hdev->claimed & HID_CLAIMED_INPUT) || !field->hidinput ||
 			!usage->type)
